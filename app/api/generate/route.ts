@@ -1,4 +1,4 @@
-import { google } from "@ai-sdk/google"
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
 import { generateText } from "ai"
 import { NextResponse } from "next/server"
 import { buildPrompt } from "@/lib/prompt"
@@ -6,6 +6,8 @@ import { EXPERIENCE_LEVELS, TONES } from "@/types/resume"
 import type { ExperienceLevel, Tone } from "@/types/resume"
 
 export const maxDuration = 30
+
+const MODEL_ID = "deepseek-ai/deepseek-v4-flash"
 
 function parseBullets(text: string): string[] {
   return text
@@ -22,9 +24,9 @@ function parseBullets(text: string): string[] {
 }
 
 export async function POST(req: Request) {
-  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+  if (!process.env.NVIDIA_API_KEY) {
     return NextResponse.json(
-      { error: "Missing GOOGLE_GENERATIVE_AI_API_KEY. Add it to your project settings." },
+      { error: "Missing NVIDIA_API_KEY. Add it to your project settings." },
       { status: 500 },
     )
   }
@@ -57,9 +59,15 @@ export async function POST(req: Request) {
   const safeTone: Tone = TONES.includes(tone as Tone) ? (tone as Tone) : "Professional"
   const safeCount = Math.min(8, Math.max(3, Number(count) || 5))
 
+  const nvidia = createOpenAICompatible({
+    name: "nvidia",
+    baseURL: "https://integrate.api.nvidia.com/v1",
+    apiKey: process.env.NVIDIA_API_KEY,
+  })
+
   try {
     const { text } = await generateText({
-      model: google("gemini-2.5-flash"),
+      model: nvidia(MODEL_ID),
       prompt: buildPrompt({
         jobTitle: jobTitle.trim(),
         experience: experience.trim(),
@@ -94,7 +102,7 @@ export async function POST(req: Request) {
       status = 429
     } else if (isAuth) {
       error =
-        "Your Gemini API key was rejected. Make sure GOOGLE_GENERATIVE_AI_API_KEY is a valid key from Google AI Studio (it should start with 'AIza')."
+        "Your NVIDIA API key was rejected. Make sure NVIDIA_API_KEY is a valid key from build.nvidia.com."
       status = 401
     }
 
