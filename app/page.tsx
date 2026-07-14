@@ -1,4 +1,4 @@
-import { Github, Linkedin, Sparkles } from "lucide-react"
+import { Star, Globe, Sparkles } from "lucide-react"
 import { Navbar } from "@/components/navbar"
 import { ResumeGenerator } from "@/components/resume-generator"
 
@@ -39,17 +39,17 @@ export default function Page() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
             >
-              <Github className="size-4" />
-              GitHub
+              <Star className="size-4" />
+              Star
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://vercel.com"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
             >
-              <Linkedin className="size-4" />
-              LinkedIn
+              <Globe className="size-4" />
+              Website
             </a>
           </div>
         </div>

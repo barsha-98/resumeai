@@ -159,8 +159,13 @@ export function ResumeForm({ form, setForm, onSubmit, isLoading }: ResumeFormPro
               min={3}
               max={8}
               step={1}
-              value={[form.count]}
-              onValueChange={([v]) => setForm((p) => ({ ...p, count: v }))}
+              value={form.count}
+              onValueChange={(v) =>
+                setForm((p) => ({
+                  ...p,
+                  count: Array.isArray(v) ? v[0] : v,
+                }))
+              }
             />
           </div>
 

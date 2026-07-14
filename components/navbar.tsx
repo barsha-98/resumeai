@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
-import { Github, Moon, Sun, Sparkles } from "lucide-react"
+import { Star, Moon, Sun, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function Navbar() {
@@ -23,19 +23,20 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <Button
-            asChild
             variant="ghost"
             size="sm"
+            nativeButton={false}
             className="hidden gap-2 sm:inline-flex"
+            render={
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
           >
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="size-4" />
-              GitHub
-            </a>
+            <Star className="size-4" />
+            Star
           </Button>
 
           <Button

@@ -83,13 +83,21 @@ export async function POST(req: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error"
     const isRateLimit = /rate|quota|429/i.test(message)
-    return NextResponse.json(
-      {
-        error: isRateLimit
-          ? "Rate limit reached. Please wait a moment and try again."
-          : "Failed to generate resume bullets. Please try again.",
-      },
-      { status: isRateLimit ? 429 : 500 },
+    const isAuth = /api key|api_key|unauthenticated|invalid.*key|permission|401|403/i.test(
+      message,
     )
+
+    let error = "Failed to generate resume bullets. Please try again."
+    let status = 500
+    if (isRateLimit) {
+      error = "Rate limit reached. Please wait a moment and try again."
+      status = 429
+    } else if (isAuth) {
+      error =
+        "Your Gemini API key was rejected. Make sure GOOGLE_GENERATIVE_AI_API_KEY is a valid key from Google AI Studio (it should start with 'AIza')."
+      status = 401
+    }
+
+    return NextResponse.json({ error }, { status })
   }
 }
